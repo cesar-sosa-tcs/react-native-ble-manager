@@ -4,6 +4,7 @@ import static com.facebook.react.bridge.UiThreadUtil.runOnUiThread;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.os.ParcelUuid;
 import android.util.Log;
 
 import com.facebook.react.bridge.Arguments;
@@ -46,6 +47,8 @@ public class LegacyScanManager extends ScanManager {
                                 peripheral.updateData(scanRecord);
                                 peripheral.updateRssi(rssi);
                             }
+
+
                             bleManager.savePeripheral(peripheral);
 
                             WritableMap map = peripheral.asWritableMap();

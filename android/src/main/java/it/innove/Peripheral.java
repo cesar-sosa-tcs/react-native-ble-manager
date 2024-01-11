@@ -58,6 +58,7 @@ public class Peripheral extends BluetoothGattCallback {
     private final Map<String, NotifyBufferContainer> bufferedCharacteristics;
     protected volatile byte[] advertisingDataBytes = new byte[0];
     protected volatile int advertisingRSSI;
+    protected volatile String[] serviceList = new String[0];
     private volatile boolean connected = false;
     private volatile boolean connecting = false;
     private ReactContext reactContext;
@@ -422,6 +423,10 @@ public class Peripheral extends BluetoothGattCallback {
         advertisingDataBytes = data;
     }
 
+    public void updateServices(String[] data) {
+        serviceList = data;
+    }
+
     //////
 
     @Override
@@ -458,7 +463,7 @@ public class Peripheral extends BluetoothGattCallback {
                         return;
                     }
                 }
-                
+
                 WritableMap map = Arguments.createMap();
                 map.putString("peripheral", device.getAddress());
                 map.putString("characteristic", charString);

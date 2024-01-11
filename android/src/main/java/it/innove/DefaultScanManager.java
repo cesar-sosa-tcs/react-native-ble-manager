@@ -153,6 +153,7 @@ public class DefaultScanManager extends ScanManager {
             info = result.getDevice().getName();
         } else {
             info = result.toString();
+
         }
 
         Log.i(BleManager.LOG_TAG, "DiscoverPeripheral: " + info);
@@ -164,6 +165,18 @@ public class DefaultScanManager extends ScanManager {
             peripheral.updateData(result);
             peripheral.updateRssi(result.getRssi());
         }
+
+        if(record!= null && record.getServiceUuids() != null){
+
+            String[] services = new String[record.getServiceUuids().size()];
+            int i = 0;
+            for(ParcelUuid parcelUuid : record.getServiceUuids()){
+                services[i] = parcelUuid.getUuid().toString();
+                i++;
+            }
+            peripheral.updateServices(services);
+        }
+
         bleManager.savePeripheral(peripheral);
 
         WritableMap map = peripheral.asWritableMap();
