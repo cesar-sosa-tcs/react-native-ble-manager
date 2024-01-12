@@ -239,11 +239,13 @@ class Peripheral:Hashable {
     var instance: CBPeripheral
     var rssi: NSNumber?
     var advertisementData: [String:Any]?
+    var serviceList: [String]?
     
-    init(peripheral: CBPeripheral, rssi: NSNumber? = nil, advertisementData: [String:Any]? = nil) {
+    init(peripheral: CBPeripheral, rssi: NSNumber? = nil, advertisementData: [String:Any]? = nil, serviceList: [String]? = nil) {
         self.instance = peripheral
         self.rssi = rssi
         self.advertisementData = advertisementData
+        self.serviceList = serviceList
     }
     
     func setRSSI(_ newRSSI: NSNumber?) {
@@ -254,12 +256,18 @@ class Peripheral:Hashable {
         self.advertisementData = advertisementData
     }
     
+    
+    func setServiceList(_ serviceList: [String]) {
+        self.serviceList = serviceList
+    }
+    
     func advertisingInfo() -> Dictionary<String, Any> {
         var peripheralInfo: [String: Any] = [:]
         
         peripheralInfo["name"] = instance.name
         peripheralInfo["id"] = instance.uuidAsString()
         peripheralInfo["rssi"] = self.rssi
+        peripheralInfo["serviceList"] = self.serviceList
         if let adv = self.advertisementData {
             peripheralInfo["advertising"] = Helper.reformatAdvertisementData(adv)
         }

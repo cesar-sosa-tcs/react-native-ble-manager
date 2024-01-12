@@ -854,7 +854,8 @@ class BleManager: RCTEventEmitter, CBCentralManagerDelegate, CBPeripheralDelegat
     
     func handleDiscoveredPeripheral(_ peripheral: CBPeripheral,
                                     advertisementData: [String : Any],
-                                    rssi : NSNumber) {
+                                    rssi : NSNumber,
+                                    serviceList: [String]) {
         if BleManager.verboseLogging {
             NSLog("Discover peripheral: \(peripheral.name ?? "NO NAME")");
         }
@@ -865,8 +866,9 @@ class BleManager: RCTEventEmitter, CBCentralManagerDelegate, CBPeripheralDelegat
                 cp = p
                 cp?.setRSSI(rssi)
                 cp?.setAdvertisementData(advertisementData)
+                cp?.setServiceList(serviceList)
             } else {
-                cp = Peripheral(peripheral:peripheral, rssi:rssi, advertisementData:advertisementData)
+                cp = Peripheral(peripheral:peripheral, rssi:rssi, advertisementData:advertisementData, serviceList: serviceList)
                 peripherals[peripheral.uuidAsString()] = cp
             }
         }
@@ -881,19 +883,26 @@ class BleManager: RCTEventEmitter, CBCentralManagerDelegate, CBPeripheralDelegat
                         advertisementData: [String : Any],
                         rssi RSSI: NSNumber) {
         if exactAdvertisingName.count > 0 {
+            
+            var serviceList = [String]()
+            
+            for service in peripheral.services ?? [] {
+                serviceList.append(service.uuid.uuidString.lowercased())
+            }
+            
             if let peripheralName = peripheral.name {
                 if exactAdvertisingName.contains(peripheralName) {
-                    handleDiscoveredPeripheral(peripheral, advertisementData: advertisementData, rssi: RSSI)
+                    handleDiscoveredPeripheral(peripheral, advertisementData: advertisementData, rssi: RSSI, serviceList: serviceList)
                 } else {
                     if let localName = advertisementData[CBAdvertisementDataLocalNameKey] as? String {
                         if exactAdvertisingName.contains(localName) {
-                            handleDiscoveredPeripheral(peripheral, advertisementData: advertisementData, rssi: RSSI)
+                            handleDiscoveredPeripheral(peripheral, advertisementData: advertisementData, rssi: RSSI, serviceList: serviceList)
                         }
                     }
                 }
             }
         } else {
-            handleDiscoveredPeripheral(peripheral, advertisementData: advertisementData, rssi: RSSI)
+            handleDiscoveredPeripheral(peripheral, advertisementData: advertisementData, rssi: RSSI, serviceList: serviceList)
         }
         
         
