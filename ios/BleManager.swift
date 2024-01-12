@@ -882,13 +882,13 @@ class BleManager: RCTEventEmitter, CBCentralManagerDelegate, CBPeripheralDelegat
                         didDiscover peripheral: CBPeripheral,
                         advertisementData: [String : Any],
                         rssi RSSI: NSNumber) {
+        var serviceList = [String]()
+        
+        for service in peripheral.services ?? [] {
+            serviceList.append(service.uuid.uuidString.lowercased())
+        }
+        
         if exactAdvertisingName.count > 0 {
-            
-            var serviceList = [String]()
-            
-            for service in peripheral.services ?? [] {
-                serviceList.append(service.uuid.uuidString.lowercased())
-            }
             
             if let peripheralName = peripheral.name {
                 if exactAdvertisingName.contains(peripheralName) {
