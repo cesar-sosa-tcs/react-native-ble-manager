@@ -1082,14 +1082,13 @@ class BleManager: RCTEventEmitter, CBCentralManagerDelegate, CBPeripheralDelegat
         if readCallbacks[key] != nil {
             invokeAndClearDictionary(&readCallbacks, withKey: key, usingParameters: [NSNull(), characteristic.value!.toArray()])
         } else {
-            if hasListeners {
                 sendEvent(withName: "BleManagerDidUpdateValueForCharacteristic", body: [
                     "peripheral": peripheral.uuidAsString(),
                     "characteristic": characteristic.uuid.uuidString.lowercased(),
                     "service": characteristic.service!.uuid.uuidString.lowercased(),
                     "value": characteristic.value!.toArray()
                 ])
-            }
+            
         }
     }
     
