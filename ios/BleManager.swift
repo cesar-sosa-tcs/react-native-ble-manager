@@ -8,7 +8,7 @@ class BleManager: RCTEventEmitter, CBCentralManagerDelegate, CBPeripheralDelegat
     static var shared:BleManager?
     static var sharedManager:CBCentralManager?
     
-    private var hasListeners:Bool = false
+    private var hasListeners:Bool = true
     
     private var manager: CBCentralManager?
     private var scanTimer: Timer?
