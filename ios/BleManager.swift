@@ -1079,17 +1079,15 @@ class BleManager: RCTEventEmitter, CBCentralManagerDelegate, CBPeripheralDelegat
             NSLog("Read value [\(characteristic.uuid)]: \( value.hexadecimalString())")
         }
         
-        if readCallbacks[key] != nil {
-            invokeAndClearDictionary(&readCallbacks, withKey: key, usingParameters: [NSNull(), characteristic.value!.toArray()])
-        } else {
-                sendEvent(withName: "BleManagerDidUpdateValueForCharacteristic", body: [
-                    "peripheral": peripheral.uuidAsString(),
-                    "characteristic": characteristic.uuid.uuidString.lowercased(),
-                    "service": characteristic.service!.uuid.uuidString.lowercased(),
-                    "value": characteristic.value!.toArray()
-                ])
+       
+        sendEvent(withName: "BleManagerDidUpdateValueForCharacteristic", body: [
+            "peripheral": peripheral.identifier.uuidString.lowercased(),
+            "characteristic": characteristic.uuid.uuidString.lowercased(),
+            "service": characteristic.service!.uuid.uuidString.lowercased(),
+            "value": characteristic.value!.toArray()
+        ])
             
-        }
+        
     }
     
     func peripheral(_ peripheral: CBPeripheral,
