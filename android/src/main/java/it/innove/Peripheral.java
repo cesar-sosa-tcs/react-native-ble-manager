@@ -450,7 +450,19 @@ public class Peripheral extends BluetoothGattCallback {
             byte[] dataValue = data;
             // If for some reason the value's length >= 2*buffer size this will be able to
             // handle it
+            while (dataValue != null) {
+                byte[] rest = null;
+                if (buffer != null) {
+                    rest = buffer.put(dataValue);
+                    if (buffer.isBufferFull()) {
 
+                        // fetch and reset
+                        dataValue = buffer.items.array();
+                        buffer.resetBuffer();
+                    } else {
+                        return;
+                    }
+                }
 
                 WritableMap map = Arguments.createMap();
                 map.putString("peripheral", device.getAddress());
@@ -459,7 +471,9 @@ public class Peripheral extends BluetoothGattCallback {
                 map.putArray("value", BleManager.bytesToWritableArray(dataValue));
                 sendEvent("BleManagerDidUpdateValueForCharacteristic", map);
 
-            
+                // Check if rest exists. If so it needs to be added to the clean buffer
+                dataValue = rest;
+            }
 
         } catch (Exception e) {
             Log.d(BleManager.LOG_TAG, "onCharacteristicChanged ERROR: " + e);
